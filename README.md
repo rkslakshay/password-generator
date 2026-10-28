@@ -28,10 +28,10 @@ python --version
 
 ## Getting the code
 
-Clone the repository, replacing the placeholder with the real repository URL:
+Clone the repository:
 
 ```bash
-git clone <YOUR-GITHUB-REPOSITORY-URL>
+git clone https://github.com/rkslakshay/password-generator
 ```
 
 Then move into the project folder:

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VAULT generates strong, random passwords on demand. Nothing is saved or logged.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07070b">
+  <title>VAULT — Secure password generator</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#generator">Skip to generator</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="VAULT home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c4b5fd"/>
+              <stop offset="1" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <path d="M16 2.5 4.5 7v8.2c0 7 4.9 12.4 11.5 14.3 6.6-1.9 11.5-7.3 11.5-14.3V7L16 2.5Z" fill="url(#brand-gradient)"/>
+          <path d="M16 6.4 8.3 9.4v5.8c0 4.9 3.2 8.8 7.7 10.4 4.5-1.6 7.7-5.5 7.7-10.4V9.4L16 6.4Z" fill="#0d0b16"/>
+          <rect x="12.6" y="14" width="6.8" height="5.6" rx="1.2" fill="url(#brand-gradient)"/>
+          <path d="M14 14v-1.6a2 2 0 0 1 4 0V14" fill="none" stroke="url(#brand-gradient)" stroke-width="1.5"/>
+        </svg>
+        <span class="brand-name">VAULT</span>
+      </a>
+
+      <div class="header-meta">
+        <span class="privacy-pill">
+          <span class="privacy-dot" aria-hidden="true"></span>
+          Privacy-first
+        </span>
+        <a class="header-link" href="{{ github_url }}" target="_blank" rel="noopener noreferrer">
+          Source
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          <span class="visually-hidden">(opens GitHub in a new tab)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="container"
+        data-min-length="{{ min_length }}"
+        data-max-length="{{ max_length }}"
+        data-default-length="{{ default_length }}">
+
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Secure password generator</p>
+      <h1 id="hero-title">Create passwords that protect what matters.</h1>
+      <p class="hero-copy">
+        Strong, random passwords made with Python's <code>secrets</code> module.
+        Generated on demand, shown once, and never saved.
+      </p>
+    </section>
+
+    <div class="layout">
+      <section id="generator" class="card generator-card" aria-labelledby="generator-title" tabindex="-1">
+        <h2 id="generator-title" class="visually-hidden">Password generator</h2>
+
+        <div class="password-panel">
+          <div class="password-label-row">
+            <span class="field-label" id="password-label">Your password</span>
+            <span class="password-meta" id="password-meta" aria-hidden="true"></span>
+          </div>
+
+          <output id="password-output" class="password-output" aria-labelledby="password-label" aria-live="off">
+            <span class="password-placeholder">Generating…</span>
+          </output>
+
+          <div class="password-actions">
+            <button type="button" class="btn btn-ghost" id="reveal-button" aria-controls="password-output">
+              <svg class="icon icon-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A9.9 9.9 0 0 1 12 5c6 0 9.5 7 9.5 7a17.6 17.6 0 0 1-3 3.9M6.6 6.6C3.9 8.4 2.5 12 2.5 12S6 19 12 19a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              <svg class="icon icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span class="btn-text" id="reveal-text">Hide</span>
+            </button>
+            <button type="button" class="btn btn-ghost" id="regenerate-button">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></svg>
+              <span class="btn-text">Regenerate</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="copy-button">
+              <svg class="icon icon-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg>
+              <svg class="icon icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+              <span class="btn-text" id="copy-text">Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+
+        <div class="settings">
+          <div class="setting-group">
+            <div class="length-header">
+              <label class="field-label" for="length-input">Length</label>
+              <span class="length-value"><span id="length-value">{{ default_length }}</span> characters</span>
+            </div>
+            <input type="range" id="length-input" class="range"
+                   min="{{ min_length }}" max="{{ max_length }}" step="1" value="{{ default_length }}"
+                   aria-describedby="length-range">
+            <div class="range-scale" id="length-range" aria-hidden="true">
+              <span>{{ min_length }}</span>
+              <span>{{ max_length }}</span>
+            </div>
+          </div>
+
+          <fieldset class="setting-group">
+            <legend class="field-label">Character types</legend>
+            <div class="toggle-grid">
+              <label class="toggle">
+                <span class="toggle-text">
+                  <span class="toggle-title" id="uppercase-label">Uppercase</span>
+                  <span class="toggle-sample" id="uppercase-sample">A–Z</span>
+                </span>
+                <input type="checkbox" role="switch" name="uppercase" aria-labelledby="uppercase-label" aria-describedby="uppercase-sample" checked data-pool-size="{{ pool_sizes.uppercase }}">
+              </label>
+              <label class="toggle">
+                <span class="toggle-text">
+                  <span class="toggle-title" id="lowercase-label">Lowercase</span>
+                  <span class="toggle-sample" id="lowercase-sample">a–z</span>
+                </span>
+                <input type="checkbox" role="switch" name="lowercase" aria-labelledby="lowercase-label" aria-describedby="lowercase-sample" checked data-pool-size="{{ pool_sizes.lowercase }}">
+              </label>
+              <label class="toggle">
+                <span class="toggle-text">
+                  <span class="toggle-title" id="digits-label">Digits</span>
+                  <span class="toggle-sample" id="digits-sample">0–9</span>
+                </span>
+                <input type="checkbox" role="switch" name="digits" aria-labelledby="digits-label" aria-describedby="digits-sample" checked data-pool-size="{{ pool_sizes.digits }}">
+              </label>
+              <label class="toggle">
+                <span class="toggle-text">
+                  <span class="toggle-title" id="symbols-label">Symbols</span>
+                  <span class="toggle-sample" id="symbols-sample">{{ symbols }}</span>
+                </span>
+                <input type="checkbox" role="switch" name="symbols" aria-labelledby="symbols-label" aria-describedby="symbols-sample" checked data-pool-size="{{ pool_sizes.symbols }}">
+              </label>
+            </div>
+            <p id="config-error" class="config-error" role="alert" hidden>
+              <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+              <span>Select at least one character type to generate a password.</span>
+            </p>
+          </fieldset>
+        </div>
+      </section>
+
+      <aside class="card strength-card" aria-labelledby="strength-title">
+        <div class="strength-header">
+          <h2 id="strength-title" class="card-title">Configuration strength</h2>
+          <span class="strength-label" id="strength-label" data-tier="excellent">Excellent</span>
+        </div>
+
+        <div class="meter" id="strength-meter" role="meter" aria-labelledby="strength-title"
+             aria-valuemin="0" aria-valuemax="128" aria-valuenow="0">
+          <span class="meter-segment"></span>
+          <span class="meter-segment"></span>
+          <span class="meter-segment"></span>
+          <span class="meter-segment"></span>
+        </div>
+
+        <p class="entropy">
+          <span class="entropy-value" id="entropy-value">0</span>
+          <span class="entropy-unit">bits of estimated entropy</span>
+        </p>
+        <p class="formula" id="entropy-formula"></p>
+
+        <ul class="criteria" aria-label="Strength criteria">
+          <li class="criterion" data-criterion="length">At least 16 characters</li>
+          <li class="criterion" data-criterion="types">Three or more character types</li>
+          <li class="criterion" data-criterion="entropy">80 or more bits of estimated entropy</li>
+        </ul>
+
+        <details class="explainer">
+          <summary>How this is calculated</summary>
+          <p>
+            The estimate is <strong>length × log₂(pool size)</strong>, where the pool is every
+            character your settings allow. It assumes each character is picked at random, which
+            VAULT does. Requiring one character of each type reduces it very slightly, so treat
+            it as an upper bound.
+          </p>
+          <p>Weak: under 45 bits · Fair: 45–64 · Strong: 65–89 · Excellent: 90+</p>
+          <p>
+            This rates your <em>settings</em>, not a promise of safety. Use a different password
+            for every account and keep them in a password manager.
+          </p>
+        </details>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-privacy">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.5 3 8 7 9.5 4-1.5 7-5 7-9.5V6l-7-3Z"/></svg>
+        Passwords are generated when you ask, sent only to your browser, and never saved or logged.
+      </p>
+      <a class="footer-link" href="{{ github_url }}" target="_blank" rel="noopener noreferrer">
+        View the project on GitHub<span class="visually-hidden"> (opens in a new tab)</span>
+      </a>
+    </div>
+  </footer>
+</body>
+</html>

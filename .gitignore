@@ -9,6 +9,9 @@ venv/
 # Local environment variables and secrets
 .env
 
+# Local editor and tool configuration
+.claude/launch.json
+
 # Test coverage output
 .coverage
 htmlcov/
